@@ -1,0 +1,72 @@
+.app {
+  min-height: 100vh;
+  background: #f0f2f5;
+}
+
+.header {
+  background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+  padding: 0 24px;
+  box-shadow: 0 2px 8px rgba(79,70,229,.3);
+}
+
+.headerInner {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 20px 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.headerTitle {
+  font-size: 22px;
+  font-weight: 700;
+  color: #fff;
+}
+
+.headerSub {
+  font-size: 13px;
+  color: rgba(255,255,255,.7);
+  margin-top: 2px;
+}
+
+.badge {
+  background: rgba(255,255,255,.15);
+  color: rgba(255,255,255,.9);
+  font-size: 12px;
+  padding: 6px 12px;
+  border-radius: 20px;
+  border: 1px solid rgba(255,255,255,.2);
+}
+
+.main {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.kpiGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+}
+
+.chartRow {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+@media (max-width: 900px) {
+  .chartRow { grid-template-columns: 1fr; }
+  .kpiGrid { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width: 600px) {
+  .main { padding: 16px; }
+  .kpiGrid { grid-template-columns: 1fr; }
+  .headerTitle { font-size: 18px; }
+}
