@@ -30,6 +30,12 @@
   margin-top: 2px;
 }
 
+.headerRight {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
 .badge {
   background: rgba(255,255,255,.15);
   color: rgba(255,255,255,.9);
@@ -38,6 +44,48 @@
   border-radius: 20px;
   border: 1px solid rgba(255,255,255,.2);
 }
+
+.badgeLive {
+  background: rgba(239,68,68,.25);
+  color: #fca5a5;
+  font-size: 12px;
+  padding: 6px 12px;
+  border-radius: 20px;
+  border: 1px solid rgba(239,68,68,.3);
+}
+
+.badgeWarn {
+  background: rgba(251,191,36,.2);
+  color: #fcd34d;
+  font-size: 12px;
+  padding: 6px 12px;
+  border-radius: 20px;
+  border: 1px solid rgba(251,191,36,.3);
+  cursor: help;
+}
+
+.loadingScreen {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  background: #f0f2f5;
+  color: #6b7280;
+  font-size: 15px;
+}
+
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid #e5e7eb;
+  border-top-color: #4f46e5;
+  border-radius: 50%;
+  animation: spin .8s linear infinite;
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }
 
 .main {
   max-width: 1400px;

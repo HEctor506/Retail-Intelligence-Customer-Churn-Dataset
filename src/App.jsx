@@ -1,6 +1,6 @@
 import { useState, useMemo } from 'react'
+import { useCustomers } from './hooks/useCustomers'
 import {
-  customers,
   getKPIs,
   getChurnByRegion,
   getChurnBySegment,
@@ -19,10 +19,10 @@ import CustomerTable from './components/CustomerTable'
 import styles from './App.module.css'
 
 const monthlyTrend = getMonthlyTrend()
-
 const DEFAULT_FILTERS = { region: 'All', segment: 'All', channel: 'All', risk: 'All', status: 'All' }
 
 export default function App() {
+  const { customers, loading, error, source } = useCustomers()
   const [filters, setFilters] = useState(DEFAULT_FILTERS)
 
   const filtered = useMemo(() => {
@@ -35,7 +35,7 @@ export default function App() {
       if (filters.status === 'Churned' && c.churn_flag === 0) return false
       return true
     })
-  }, [filters])
+  }, [customers, filters])
 
   const kpis = useMemo(() => getKPIs(filtered), [filtered])
   const byRegion = useMemo(() => getChurnByRegion(filtered), [filtered])
@@ -43,22 +43,40 @@ export default function App() {
   const byChannel = useMemo(() => getChurnByChannel(filtered), [filtered])
   const byAge = useMemo(() => getAgeDistribution(filtered), [filtered])
 
+  if (loading) {
+    return (
+      <div className={styles.loadingScreen}>
+        <div className={styles.spinner} />
+        <p>Cargando datos desde Firebase…</p>
+      </div>
+    )
+  }
+
   return (
     <div className={styles.app}>
       <header className={styles.header}>
         <div className={styles.headerInner}>
           <div>
             <h1 className={styles.headerTitle}>📊 Retail Intelligence — Customer Churn</h1>
-            <p className={styles.headerSub}>Datos mock alineados con el dataset real · {customers.length} registros</p>
+            <p className={styles.headerSub}>{customers.length} registros cargados</p>
           </div>
-          <span className={styles.badge}>Junio 2025</span>
+          <div className={styles.headerRight}>
+            {error && (
+              <span className={styles.badgeWarn} title={error}>
+                ⚠️ Mock data
+              </span>
+            )}
+            {!error && source === 'firebase' && (
+              <span className={styles.badgeLive}>🔴 Firebase Live</span>
+            )}
+            <span className={styles.badge}>Junio 2025</span>
+          </div>
         </div>
       </header>
 
       <main className={styles.main}>
         <FilterBar filters={filters} onChange={setFilters} />
 
-        {/* KPIs */}
         <section className={styles.kpiGrid}>
           <KPICard title="Total Clientes" value={kpis.total.toLocaleString()}
             subtitle="Registros en el segmento" color="#4f46e5" icon="👥" />
@@ -72,22 +90,17 @@ export default function App() {
             subtitle="Churn flag=1 + riesgo alto" color="#8b5cf6" icon="⚠️" />
         </section>
 
-        {/* Fila 1: región + segmento */}
         <section className={styles.chartRow}>
           <ChurnByRegionChart data={byRegion} />
           <ChurnByCategoryChart data={bySegment} />
         </section>
 
-        {/* Fila 2: canal + edad */}
         <section className={styles.chartRow}>
           <ChurnByChannelChart data={byChannel} />
           <AgeDistributionChart data={byAge} />
         </section>
 
-        {/* Tendencia temporal */}
         <ChurnTrendChart data={monthlyTrend} />
-
-        {/* Tabla */}
         <CustomerTable data={filtered} />
       </main>
     </div>
