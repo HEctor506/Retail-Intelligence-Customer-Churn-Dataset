@@ -143,3 +143,52 @@ export function getRiskDistribution(data) {
     count: data.filter(c => c.churn_risk === risk).length,
   }))
 }
+
+export function getChannelMetrics(data) {
+  return CHANNELS.map(ch => {
+    const group = data.filter(c => c.preferred_channel === ch)
+    if (!group.length) return { channel: ch, avgOrder: 0, avgEngagement: 0, avgLoyalty: 0, churned: 0, total: 0 }
+    const avg = key => group.reduce((s, c) => s + c[key], 0) / group.length
+    return {
+      channel: ch,
+      avgOrder: Math.round(avg('avg_order_value')),
+      avgEngagement: Math.round(avg('engagement_score') * 10) / 10,
+      avgLoyalty: Math.round(avg('loyalty_score')),
+      churned: group.filter(c => c.churn_flag === 1).length,
+      total: group.length,
+    }
+  })
+}
+
+export function getHighRiskCustomers(data, limit = 20) {
+  return data
+    .filter(c => c.churn_risk === 'High')
+    .sort((a, b) => b.avg_order_value * b.purchase_frequency - a.avg_order_value * a.purchase_frequency)
+    .slice(0, limit)
+}
+
+export function getRiskByRegion(data) {
+  return REGIONS.map(region => {
+    const group = data.filter(c => c.region === region)
+    const high   = group.filter(c => c.churn_risk === 'High').length
+    const medium = group.filter(c => c.churn_risk === 'Medium').length
+    const low    = group.filter(c => c.churn_risk === 'Low').length
+    return { region, High: high, Medium: medium, Low: low }
+  })
+}
+
+export function getSegmentMetrics(data) {
+  return SEGMENTS.map(seg => {
+    const group = data.filter(c => c.customer_segment === seg)
+    if (!group.length) return { segment: seg, total: 0, churned: 0, avgLoyalty: 0, avgSpend: 0 }
+    const churned = group.filter(c => c.churn_flag === 1).length
+    return {
+      segment: seg,
+      total: group.length,
+      churned,
+      retentionRate: Math.round(((group.length - churned) / group.length) * 100),
+      avgLoyalty: Math.round(group.reduce((s, c) => s + c.loyalty_score, 0) / group.length),
+      avgSpend: Math.round(group.reduce((s, c) => s + c.total_spent, 0) / group.length),
+    }
+  })
+}

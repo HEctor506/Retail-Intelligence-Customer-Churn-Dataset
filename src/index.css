@@ -1,3 +1,13 @@
+@import "tailwindcss";
+
+@theme inline {
+  --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+  --color-brand:      #0891b2;
+  --color-brand-dark: #0e7490;
+  --color-churn:      #f43f5e;
+  --color-active:     #10b981;
+}
+
 *, *::before, *::after {
   box-sizing: border-box;
   margin: 0;
@@ -6,17 +16,21 @@
 
 body {
   font-family: 'Inter', system-ui, -apple-system, sans-serif;
-  background-color: #f0f2f5;
-  color: #1a1a2e;
+  background-color: #eef2f7;
+  color: #0f172a;
   min-height: 100vh;
 }
 
-#root {
-  min-height: 100vh;
+#root { min-height: 100vh; }
+
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: #eef2f7; }
+::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+
+@keyframes countUp {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 
-/* Scrollbar */
-::-webkit-scrollbar { width: 6px; height: 6px; }
-::-webkit-scrollbar-track { background: #f0f2f5; }
-::-webkit-scrollbar-thumb { background: #c1c9d6; border-radius: 3px; }
-::-webkit-scrollbar-thumb:hover { background: #9aa5b4; }
+.kpi-value { animation: countUp 0.45s ease-out both; }

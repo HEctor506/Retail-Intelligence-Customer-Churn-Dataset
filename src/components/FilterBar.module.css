@@ -1,60 +1,49 @@
 .bar {
-  background: #fff;
-  border-radius: 12px;
-  padding: 14px 20px;
   display: flex;
   align-items: center;
   gap: 20px;
   flex-wrap: wrap;
-  box-shadow: 0 1px 3px rgba(0,0,0,.08);
 }
 
 .label {
-  font-size: 13px;
-  font-weight: 600;
-  color: #374151;
+  font-size: 11px;
+  font-weight: 700;
+  color: '#94a3b8';
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  white-space: nowrap;
+  color: #94a3b8;
 }
 
 .group {
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 3px;
 }
 
 .fieldLabel {
-  font-size: 10px;
+  font-size: 9px;
   text-transform: uppercase;
-  letter-spacing: .5px;
-  color: #9ca3af;
-  font-weight: 600;
+  letter-spacing: 0.08em;
+  color: #94a3b8;
+  font-weight: 700;
 }
 
 .select {
-  border: 1px solid #e5e7eb;
-  border-radius: 7px;
-  padding: 6px 10px;
-  font-size: 13px;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 6px 12px;
+  font-size: 12px;
   font-family: inherit;
-  color: #374151;
-  background: #f9fafb;
+  color: #334155;
+  background: #f8fafc;
   cursor: pointer;
   outline: none;
-  transition: border-color .2s;
-  min-width: 120px;
+  transition: border-color .15s, box-shadow .15s;
+  min-width: 110px;
 }
-.select:focus { border-color: #4f46e5; background: #fff; }
-
-.reset {
-  margin-left: auto;
-  background: #f3f4f6;
-  border: none;
-  border-radius: 7px;
-  padding: 7px 16px;
-  font-size: 13px;
-  font-family: inherit;
-  cursor: pointer;
-  color: #6b7280;
-  font-weight: 500;
-  transition: background .2s;
+.select:focus {
+  border-color: #0891b2;
+  box-shadow: 0 0 0 3px rgba(8,145,178,0.12);
+  background: #fff;
 }
-.reset:hover { background: #e5e7eb; color: #374151; }
