@@ -23,11 +23,11 @@ const SEG_PALETTE = {
   Returning: { bg: '#fffbeb', color: '#b45309', bar: '#f59e0b' },
 }
 
-export default function CustomersSection({ data }) {
+export default function CustomersSection({ data, isMobile }) {
   const metrics = useMemo(() => getSegmentMetrics(data), [data])
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '56px' }}>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: isMobile ? '40px' : '56px' }}>
 
       {/* Segment summary */}
       <section>

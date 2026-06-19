@@ -8,31 +8,32 @@ import AgeDistributionChart from '../AgeDistributionChart'
 
 const TREND = getMonthlyTrend()
 
-function KPICard({ title, value, subtitle, icon: Icon, accentColor, valueColor, trend, trendUp }) {
+function KPICard({ title, value, subtitle, icon: Icon, accentColor, valueColor, trend, trendUp, isMobile }) {
+  const pad = isMobile ? '16px' : '28px'
   return (
     <div style={{
       background: '#fff',
       borderRadius: '16px',
-      padding: '28px 28px 24px',
+      padding: `${pad} ${pad} ${isMobile ? '14px' : '24px'}`,
       boxShadow: '0 1px 4px rgba(0,0,0,0.06), 0 4px 16px rgba(0,0,0,0.04)',
       border: '1px solid #e8edf3',
       borderTop: `4px solid ${accentColor}`,
       display: 'flex',
       flexDirection: 'column',
-      minHeight: '160px',
+      minHeight: isMobile ? '130px' : '160px',
     }}>
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '20px' }}>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: isMobile ? '12px' : '20px' }}>
         <div style={{
-          width: '40px', height: '40px', borderRadius: '10px',
+          width: '36px', height: '36px', borderRadius: '10px',
           background: `${accentColor}14`,
           display: 'flex', alignItems: 'center', justifyContent: 'center',
         }}>
-          <Icon size={17} style={{ color: accentColor }} />
+          <Icon size={15} style={{ color: accentColor }} />
         </div>
         {trend != null && (
           <span style={{
-            fontSize: '11px', fontWeight: 700,
-            padding: '4px 10px', borderRadius: '999px',
+            fontSize: '10px', fontWeight: 700,
+            padding: '3px 8px', borderRadius: '999px',
             background: trendUp ? '#fef2f2' : '#f0fdf4',
             color: trendUp ? '#e11d48' : '#059669',
           }}>
@@ -40,13 +41,13 @@ function KPICard({ title, value, subtitle, icon: Icon, accentColor, valueColor, 
           </span>
         )}
       </div>
-      <p style={{ fontSize: '10px', fontWeight: 700, color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: '8px' }}>
+      <p style={{ fontSize: '9px', fontWeight: 700, color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: '6px' }}>
         {title}
       </p>
-      <p className="kpi-value" style={{ fontSize: '32px', fontWeight: 900, color: valueColor, letterSpacing: '-0.02em', lineHeight: 1 }}>
+      <p className="kpi-value" style={{ fontSize: isMobile ? '24px' : '32px', fontWeight: 900, color: valueColor, letterSpacing: '-0.02em', lineHeight: 1 }}>
         {value}
       </p>
-      {subtitle && (
+      {subtitle && !isMobile && (
         <p style={{ fontSize: '11px', color: '#94a3b8', marginTop: '10px' }}>{subtitle}</p>
       )}
     </div>
@@ -67,7 +68,7 @@ function SectionHeader({ title, description }) {
   )
 }
 
-export default function OverviewSection({ data }) {
+export default function OverviewSection({ data, isMobile, isTablet }) {
   const kpis      = useMemo(() => getKPIs(data), [data])
   const byRegion  = useMemo(() => getChurnByRegion(data), [data])
   const bySegment = useMemo(() => getChurnBySegment(data), [data])
@@ -81,21 +82,23 @@ export default function OverviewSection({ data }) {
     { title: 'Revenue en Riesgo', value: `$${(kpis.revenueAtRisk / 1000).toFixed(0)}K`, subtitle: 'Clientes High + churn_flag = 1',            icon: AlertTriangle, accentColor: '#8b5cf6', valueColor: '#7c3aed' },
   ]
 
+  const sectionGap = isMobile ? '40px' : '64px'
+
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '64px' }}>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: sectionGap }}>
 
       {/* KPIs */}
       <section>
         <SectionHeader title="Indicadores Clave" description="Métricas principales del segmento seleccionado" />
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(210px, 1fr))', gap: '20px' }}>
-          {KPIS.map(kpi => <KPICard key={kpi.title} {...kpi} />)}
+        <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr 1fr' : 'repeat(auto-fit, minmax(210px, 1fr))', gap: '16px' }}>
+          {KPIS.map(kpi => <KPICard key={kpi.title} {...kpi} isMobile={isMobile} />)}
         </div>
       </section>
 
       {/* Region + Segment */}
       <section>
         <SectionHeader title="Distribución Geográfica y por Segmento" description="Activos vs. perdidos por región y tipo de cliente" />
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr', gap: '16px' }}>
           <ChurnByRegionChart data={byRegion} />
           <ChurnByCategoryChart data={bySegment} />
         </div>

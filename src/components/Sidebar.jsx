@@ -1,4 +1,4 @@
-import { LayoutDashboard, ShieldAlert, Users, Radio, TrendingDown } from 'lucide-react'
+import { LayoutDashboard, ShieldAlert, Users, Radio, TrendingDown, X } from 'lucide-react'
 
 const NAV = [
   { id: 'overview',  label: 'Overview',       sub: 'Visión general',     icon: LayoutDashboard },
@@ -92,10 +92,34 @@ function NavBtn({ item, active, onClick }) {
   )
 }
 
-export default function Sidebar({ active, onNav, source, totalRecords }) {
+export default function Sidebar({ active, onNav, source, totalRecords, isMobile, isOpen, onClose }) {
   const isLive = source === 'firebase'
+
+  const mobileOverride = isMobile ? {
+    position: 'fixed',
+    top: 0,
+    left: 0,
+    zIndex: 1000,
+    transform: isOpen ? 'translateX(0)' : 'translateX(-100%)',
+    transition: 'transform 0.25s ease',
+    boxShadow: isOpen ? '4px 0 32px rgba(0,0,0,0.4)' : 'none',
+  } : {}
+
   return (
-    <aside style={S.aside}>
+    <aside style={{ ...S.aside, ...mobileOverride }}>
+      {isMobile && (
+        <button
+          onClick={onClose}
+          style={{
+            position: 'absolute', top: '14px', right: '14px',
+            background: 'rgba(255,255,255,0.08)', border: 'none',
+            borderRadius: '8px', padding: '6px', cursor: 'pointer',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+          }}
+        >
+          <X size={16} color="#94a3b8" />
+        </button>
+      )}
       <div style={S.brand}>
         <div style={S.logoBox}>
           <div style={S.logoIcon}>

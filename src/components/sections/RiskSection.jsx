@@ -67,7 +67,7 @@ function RiskBadge({ risk }) {
   )
 }
 
-export default function RiskSection({ data }) {
+export default function RiskSection({ data, isMobile }) {
   const riskDist   = useMemo(() => getRiskDistribution(data), [data])
   const riskRegion = useMemo(() => getRiskByRegion(data), [data])
   const highRisk   = useMemo(() => getHighRiskCustomers(data, 15), [data])
@@ -80,12 +80,12 @@ export default function RiskSection({ data }) {
   const COLS = ['ID', 'Edad', 'Región', 'Segmento', 'Canal', 'Recency', 'Loyalty', 'Ticket Avg', 'Revenue Riesgo', 'Riesgo']
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '56px' }}>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: isMobile ? '40px' : '56px' }}>
 
       {/* Summary cards */}
       <section>
         <SectionHeader title="Resumen de Riesgo" description="Clientes clasificados por probabilidad de abandono" />
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '20px' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : 'repeat(3, 1fr)', gap: '16px' }}>
           <RiskSummaryCard risk="High"   count={totalHigh} pct={((totalHigh/total)*100).toFixed(1)} />
           <RiskSummaryCard risk="Medium" count={totalMed}  pct={((totalMed/total)*100).toFixed(1)} />
           <RiskSummaryCard risk="Low"    count={totalLow}  pct={((totalLow/total)*100).toFixed(1)} />
@@ -95,7 +95,7 @@ export default function RiskSection({ data }) {
       {/* Charts */}
       <section>
         <SectionHeader title="Distribución Visual" description="Comparativa de riesgo por nivel y por región geográfica" />
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr', gap: '16px' }}>
           <ChartCard title="Distribución de Riesgo" subtitle="Clientes por nivel de riesgo de churn">
             <BarChart
               height={280}

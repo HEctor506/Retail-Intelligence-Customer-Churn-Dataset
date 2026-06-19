@@ -24,17 +24,17 @@ const CH_PALETTE = {
   'In-Store':   { border: '#f59e0b', bg: '#fffbeb', color: '#b45309', icon: '🏪' },
 }
 
-export default function ChannelsSection({ data }) {
+export default function ChannelsSection({ data, isMobile }) {
   const metrics   = useMemo(() => getChannelMetrics(data), [data])
   const churnByCh = useMemo(() => getChurnByChannel(data), [data])
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '56px' }}>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: isMobile ? '40px' : '56px' }}>
 
       {/* Channel cards */}
       <section>
         <SectionHeader title="Resumen por Canal" description="Rendimiento, engagement y churn por canal de venta" />
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '20px' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : 'repeat(3, 1fr)', gap: '16px' }}>
           {metrics.map(m => {
             const p = CH_PALETTE[m.channel] || { border: '#94a3b8', bg: '#f8fafc', color: '#475569', icon: '🔗' }
             const churnRate = m.total > 0 ? ((m.churned / m.total) * 100).toFixed(1) : 0
@@ -89,7 +89,7 @@ export default function ChannelsSection({ data }) {
       {/* Charts */}
       <section>
         <SectionHeader title="Análisis Gráfico" description="Churn, ticket, engagement y loyalty comparados por canal" />
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px', marginBottom: '20px' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr', gap: '16px', marginBottom: '16px' }}>
           <ChurnByChannelChart data={churnByCh} />
           <ChartCard title="Ticket Promedio por Canal" subtitle="avg_order_value comparativo">
             <BarChart
@@ -100,7 +100,7 @@ export default function ChannelsSection({ data }) {
             />
           </ChartCard>
         </div>
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr', gap: '16px' }}>
           <ChartCard title="Engagement Score por Canal" subtitle="Promedio de engagement_score">
             <BarChart
               height={280}
