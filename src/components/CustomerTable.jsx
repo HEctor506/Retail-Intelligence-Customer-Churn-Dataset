@@ -1,12 +1,12 @@
 import { useState } from 'react'
 import styles from './CustomerTable.module.css'
 
-const RISK_COLOR = { Bajo: '#10b981', Medio: '#f59e0b', Alto: '#f43f5e' }
+const RISK_COLOR = { Low: '#10b981', Medium: '#f59e0b', High: '#f43f5e' }
 const PAGE_SIZE = 10
 
 export default function CustomerTable({ data }) {
   const [search, setSearch] = useState('')
-  const [sortKey, setSortKey] = useState('id')
+  const [sortKey, setSortKey] = useState('customer_id')
   const [sortDir, setSortDir] = useState('asc')
   const [page, setPage] = useState(1)
 
@@ -17,9 +17,10 @@ export default function CustomerTable({ data }) {
   }
 
   const filtered = data.filter(c =>
-    c.name.toLowerCase().includes(search.toLowerCase()) ||
-    c.id.toLowerCase().includes(search.toLowerCase()) ||
-    c.region.toLowerCase().includes(search.toLowerCase())
+    c.customer_id.toLowerCase().includes(search.toLowerCase()) ||
+    c.region.toLowerCase().includes(search.toLowerCase()) ||
+    c.customer_segment.toLowerCase().includes(search.toLowerCase()) ||
+    c.preferred_channel.toLowerCase().includes(search.toLowerCase())
   )
 
   const sorted = [...filtered].sort((a, b) => {
@@ -36,35 +37,39 @@ export default function CustomerTable({ data }) {
     return <span className={styles.sortActive}>{sortDir === 'asc' ? '↑' : '↓'}</span>
   }
 
+  const COLS = [
+    ['customer_id', 'ID'],
+    ['age_group', 'Edad'],
+    ['gender', 'Género'],
+    ['region', 'Región'],
+    ['customer_segment', 'Segmento'],
+    ['preferred_channel', 'Canal'],
+    ['avg_order_value', 'Ticket Avg'],
+    ['recency_days', 'Recency'],
+    ['loyalty_score', 'Fidelidad'],
+    ['engagement_score', 'Engagement'],
+    ['churn_risk', 'Riesgo'],
+    ['churn_flag', 'Estado'],
+  ]
+
   return (
     <div className={styles.wrapper}>
       <div className={styles.toolbar}>
         <h3 className={styles.title}>Clientes</h3>
         <input
           className={styles.search}
-          placeholder="Buscar por nombre, ID o región…"
+          placeholder="Buscar por ID, región, segmento o canal…"
           value={search}
           onChange={e => { setSearch(e.target.value); setPage(1) }}
         />
-        <span className={styles.count}>{filtered.length} clientes</span>
+        <span className={styles.count}>{filtered.length} registros</span>
       </div>
 
       <div className={styles.tableWrap}>
         <table className={styles.table}>
           <thead>
             <tr>
-              {[
-                ['id', 'ID'],
-                ['name', 'Nombre'],
-                ['age', 'Edad'],
-                ['gender', 'Género'],
-                ['region', 'Región'],
-                ['category', 'Categoría'],
-                ['monthlySpend', 'Gasto/mes'],
-                ['loyaltyScore', 'Fidelidad'],
-                ['churnRisk', 'Riesgo'],
-                ['churned', 'Estado'],
-              ].map(([key, label]) => (
+              {COLS.map(([key, label]) => (
                 <th key={key} className={styles.th} onClick={() => toggleSort(key)}>
                   {label} <SortIcon col={key} />
                 </th>
@@ -73,34 +78,43 @@ export default function CustomerTable({ data }) {
           </thead>
           <tbody>
             {pageData.map(c => (
-              <tr key={c.id} className={c.churned ? styles.rowChurned : styles.row}>
-                <td className={styles.td}><code>{c.id}</code></td>
-                <td className={styles.td}>{c.name}</td>
-                <td className={styles.td}>{c.age}</td>
+              <tr key={c.customer_id} className={c.churn_flag === 1 ? styles.rowChurned : styles.row}>
+                <td className={styles.td}><code>{c.customer_id}</code></td>
+                <td className={styles.td}>{c.age_group}</td>
                 <td className={styles.td}>{c.gender}</td>
                 <td className={styles.td}>{c.region}</td>
-                <td className={styles.td}>{c.category}</td>
-                <td className={styles.td}>${c.monthlySpend.toFixed(0)}</td>
+                <td className={styles.td}>
+                  <span className={styles.segBadge} data-seg={c.customer_segment}>
+                    {c.customer_segment}
+                  </span>
+                </td>
+                <td className={styles.td}>{c.preferred_channel}</td>
+                <td className={styles.td}>${c.avg_order_value.toFixed(0)}</td>
+                <td className={styles.td}>{c.recency_days}d</td>
                 <td className={styles.td}>
                   <div className={styles.barWrap}>
                     <div
                       className={styles.bar}
-                      style={{ width: `${c.loyaltyScore}%`, backgroundColor: c.loyaltyScore > 60 ? '#10b981' : c.loyaltyScore > 35 ? '#f59e0b' : '#f43f5e' }}
+                      style={{
+                        width: `${c.loyalty_score}%`,
+                        backgroundColor: c.loyalty_score > 60 ? '#10b981' : c.loyalty_score > 35 ? '#f59e0b' : '#f43f5e'
+                      }}
                     />
-                    <span>{c.loyaltyScore}</span>
+                    <span>{c.loyalty_score}</span>
                   </div>
                 </td>
+                <td className={styles.td}>{c.engagement_score.toFixed(1)}</td>
                 <td className={styles.td}>
                   <span
                     className={styles.badge}
-                    style={{ backgroundColor: RISK_COLOR[c.churnRisk] + '22', color: RISK_COLOR[c.churnRisk] }}
+                    style={{ backgroundColor: RISK_COLOR[c.churn_risk] + '22', color: RISK_COLOR[c.churn_risk] }}
                   >
-                    {c.churnRisk}
+                    {c.churn_risk}
                   </span>
                 </td>
                 <td className={styles.td}>
-                  <span className={c.churned ? styles.lost : styles.active}>
-                    {c.churned ? 'Perdido' : 'Activo'}
+                  <span className={c.churn_flag === 1 ? styles.lost : styles.active}>
+                    {c.churn_flag === 1 ? 'Perdido' : 'Activo'}
                   </span>
                 </td>
               </tr>
